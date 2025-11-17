@@ -24,7 +24,7 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;            /* stop page scrolling */
+      overflow: hidden;            /* Stop page scrolling */
       background: var(--bg);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
@@ -39,7 +39,7 @@
     .frame {
       flex: 1;
       max-width: 1200px;
-      height: 100vh;               /* always fill screen */
+      height: 100vh;               /* Always fill screen height */
       margin: 0;
       border-radius: 0;
       background: linear-gradient(135deg, #303242, #11131b);
@@ -136,17 +136,16 @@
         alt="3D jewelry design by Enchantment By Design"
         camera-controls
         auto-rotate
-        auto-rotate-delay="3000"      <!-- 3 second delay after touch -->
+        auto-rotate-delay="3000"
         rotation-per-second="15deg"
         exposure="1.0"
         shadow-intensity="0.9"
         shadow-softness="0.6"
         environment-image="neutral"
-        touch-action="none"           <!-- viewer owns all touch gestures -->
-        interaction-prompt="none"     <!-- we’ll control the hint manually -->
+        touch-action="none"
+        interaction-prompt="none"
         ar
-        ar-modes="scene-viewer webxr quick-look"
-      >
+        ar-modes="scene-viewer webxr quick-look">
       </model-viewer>
 
       <!-- One-time interaction hint logic -->
@@ -155,10 +154,10 @@
         const hasSeenHint = localStorage.getItem("ebd_hintShown");
 
         if (!hasSeenHint) {
-          // Show the built-in hint once
+          // Show built-in hint once
           viewer.setAttribute("interaction-prompt", "auto");
 
-          // After first camera change (user interacts), hide and never show again
+          // After user's first gesture → hide & never show again
           viewer.addEventListener("camera-change", () => {
             viewer.setAttribute("interaction-prompt", "none");
             localStorage.setItem("ebd_hintShown", "true");
