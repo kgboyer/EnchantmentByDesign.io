@@ -20,89 +20,100 @@
 
     * { box-sizing: border-box; }
 
-    body {
+    html, body {
       margin: 0;
-      background: radial-gradient(circle at top, #151824 0, var(--bg) 55%);
+      padding: 0;
+      height: 100%;
+      overflow: hidden;            /* 🔒 stop the page from scrolling */
+      background: var(--bg);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
-      min-height: 100vh;
+    }
+
+    body {
       display: flex;
       align-items: stretch;
       justify-content: center;
     }
 
     .frame {
-      margin: 24px;
-      border-radius: 18px;
+      flex: 1;
+      max-width: 1200px;
+      height: 100vh;               /* 🔒 always fill the screen height */
+      margin: 0;
+      border-radius: 0;
       background: linear-gradient(135deg, #303242, #11131b);
       box-shadow:
         0 24px 60px rgba(0, 0, 0, 0.8),
         0 0 0 1px rgba(255, 255, 255, 0.04);
-      overflow: hidden;
-      flex: 1;
-      max-width: 1200px;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      padding: 14px 20px;
+      padding: 10px 16px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 16px;
+      gap: 10px;
       background: linear-gradient(135deg, #202331, #151724);
+      z-index: 2;
     }
 
     header h1 {
       margin: 0;
-      font-size: 18px;
+      font-size: 16px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-weight: 500;
     }
 
     header span {
-      font-size: 13px;
+      font-size: 12px;
       opacity: 0.7;
+    }
+
+    .viewer-wrap {
+      flex: 1;
+      min-height: 0;
     }
 
     model-viewer {
       width: 100%;
-      height: min(70vh, 760px);
+      height: 100%;
       background: radial-gradient(circle at center, #333848 0, #05060a 70%);
     }
 
     footer {
-      padding: 10px 16px 14px;
-      font-size: 12px;
-      opacity: 0.75;
+      padding: 8px 14px 10px;
+      font-size: 11px;
+      opacity: 0.8;
       display: flex;
       justify-content: space-between;
-      gap: 16px;
+      gap: 10px;
       align-items: center;
       background: #10121a;
+      z-index: 2;
     }
 
     .hint {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
     .dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 6px rgba(255, 220, 160, 0.9);
     }
 
     @media (max-width: 720px) {
-      .frame { margin: 12px; border-radius: 14px; }
-      model-viewer { height: 70vh; }
-      header h1 { font-size: 15px; }
+      .frame { box-shadow: none; }
+      header h1 { font-size: 14px; }
       header span { font-size: 11px; }
       footer { flex-direction: column; align-items: flex-start; }
     }
@@ -113,31 +124,34 @@
     <header>
       <div>
         <h1>Enchantment By Design</h1>
-        <span>Interactive 3D preview – drag to rotate, scroll to zoom</span>
+        <span>Drag to rotate • Pinch to zoom</span>
       </div>
     </header>
 
-    <!-- 3D MODEL VIEWER -->
-    <model-viewer
-      src="model.glb"
-      alt="3D jewelry design by Enchantment By Design"
-      camera-controls
-      auto-rotate
-      auto-rotate-delay="1000"
-      rotation-per-second="15deg"
-      exposure="1.0"
-      shadow-intensity="0.9"
-      shadow-softness="0.6"
-      environment-image="neutral"
-      touch-action="pan-y"
-      ar
-    >
-    </model-viewer>
+    <div class="viewer-wrap">
+      <!-- 3D MODEL VIEWER -->
+      <model-viewer
+        src="model.glb"
+        alt="3D jewelry design by Enchantment By Design"
+        camera-controls
+        auto-rotate
+        auto-rotate-delay="1000"
+        rotation-per-second="15deg"
+        exposure="1.0"
+        shadow-intensity="0.9"
+        shadow-softness="0.6"
+        environment-image="neutral"
+        touch-action="none"           <!-- 🔒 let the viewer own all touch gestures -->
+        ar
+        ar-modes="scene-viewer webxr quick-look"
+      >
+      </model-viewer>
+    </div>
 
     <footer>
       <div class="hint">
         <span class="dot"></span>
-        <span>Drag to rotate • Scroll / pinch to zoom • Right-drag to pan</span>
+        <span>Use “View in your space” on Android for AR preview.</span>
       </div>
       <span>© Enchantment By Design</span>
     </footer>
