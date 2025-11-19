@@ -80,31 +80,29 @@
   viewer.addEventListener('load', () => {
     const gold = viewer.model.getMaterialByName('Default');
     const sapphire = viewer.model.getMaterialByName('Sapphire');
+    if (!gold || !sapphire) return;
 
-    // -----------------------------
-    //  GOLD — Soft buttery 18k PBR
-    // -----------------------------
-    gold.pbrMetallicRoughness.setBaseColorFactor([1.00, 0.84, 0.38, 1.0]); 
+    // -------- GOLD: soft buttery 18k --------
+    gold.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.82, 0.30, 1.0]);
     gold.pbrMetallicRoughness.setMetallicFactor(1.0);
-    gold.pbrMetallicRoughness.setRoughnessFactor(0.18);
+    gold.pbrMetallicRoughness.setRoughnessFactor(0.10);
+    gold.setAlphaMode("OPAQUE");
+    gold.setDoubleSided(true);        // <-- important for MultiPipe / thin bits
 
-    // -----------------------------
-    //  SAPPHIRE — Montana Blue
-    // -----------------------------
-    sapphire.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.22, 0.55, 0.85]); 
+    // -------- SAPPHIRE: Montana blue --------
+    sapphire.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.22, 0.55, 0.85]);
     sapphire.pbrMetallicRoughness.setMetallicFactor(0.0);
     sapphire.pbrMetallicRoughness.setRoughnessFactor(0.05);
-
-    // Proper gemstone transparency
-    sapphire.setAlphaMode("BLEND");
+    sapphire.setAlphaMode("BLEND");   // transparent
     sapphire.setAlphaCutoff(0.05);
+    sapphire.setDoubleSided(true);    // nice for seeing it from all sides
   });
 </script>
-
-
+  
   <div class="hint">Drag to rotate · Pinch to zoom · Tap “View in your space” on Android for AR</div>
 </body>
 </html>
+
 
 
 
