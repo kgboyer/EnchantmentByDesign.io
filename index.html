@@ -74,6 +74,34 @@
     alt="Gold pendant with Montana sapphire-like stone">
   </model-viewer>
 
+  <script type="module">
+  const viewer = document.querySelector('model-viewer');
+
+  viewer.addEventListener('load', () => {
+    const gold = viewer.model.getMaterialByName('Default');
+    const sapphire = viewer.model.getMaterialByName('Sapphire');
+
+    // -----------------------------
+    //  GOLD — Soft buttery 18k PBR
+    // -----------------------------
+    gold.pbrMetallicRoughness.setBaseColorFactor([1.00, 0.84, 0.38, 1.0]); 
+    gold.pbrMetallicRoughness.setMetallicFactor(1.0);
+    gold.pbrMetallicRoughness.setRoughnessFactor(0.18);
+
+    // -----------------------------
+    //  SAPPHIRE — Montana Blue
+    // -----------------------------
+    sapphire.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.22, 0.55, 0.85]); 
+    sapphire.pbrMetallicRoughness.setMetallicFactor(0.0);
+    sapphire.pbrMetallicRoughness.setRoughnessFactor(0.05);
+
+    // Proper gemstone transparency
+    sapphire.setAlphaMode("BLEND");
+    sapphire.setAlphaCutoff(0.05);
+  });
+</script>
+
+
   <div class="hint">Drag to rotate · Pinch to zoom · Tap “View in your space” on Android for AR</div>
 
   <script type="module">
@@ -126,5 +154,6 @@
   </script>
 </body>
 </html>
+
 
 
