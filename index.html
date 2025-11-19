@@ -4,175 +4,125 @@
   <meta charset="UTF-8" />
   <title>Enchantment By Design – 3D Viewer</title>
 
-  <!-- model-viewer web component -->
-  <script type="module"
-          src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
+  <!-- model-viewer library -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #05060a;
-      --panel: #12141c;
-      --accent: #e0c07d;
-      --text: #f5f5f5;
-    }
-
-    * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;            /* Stop page scrolling */
-      background: var(--bg);
+      background: #05070b;
+      color: #f5f5f5;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-    }
-
-    body {
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-    }
-
-    .frame {
-      flex: 1;
-      max-width: 1200px;
-      height: 100vh;               /* Always fill screen height */
-      margin: 0;
-      border-radius: 0;
-      background: linear-gradient(135deg, #303242, #11131b);
-      box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.8),
-        0 0 0 1px rgba(255, 255, 255, 0.04);
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      padding: 10px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      background: linear-gradient(135deg, #202331, #151724);
-      z-index: 2;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 16px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    header span {
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    .viewer-wrap {
-      flex: 1;
-      min-height: 0;
     }
 
     model-viewer {
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, #333848 0, #05060a 70%);
+      width: 100vw;
+      height: 100vh;
+      outline: none;
+      touch-action: none; /* stop page scrolling while rotating */
     }
 
-    footer {
-      padding: 8px 14px 10px;
+    .brand {
+      position: fixed;
+      top: 8px;
+      left: 12px;
       font-size: 11px;
-      opacity: 0.8;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      background: #10121a;
-      z-index: 2;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     .hint {
-      display: flex;
-      gap: 6px;
-      align-items: center;
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.7;
+      pointer-events: none;
     }
 
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 6px rgba(255, 220, 160, 0.9);
-    }
-
-    @media (max-width: 720px) {
-      .frame { box-shadow: none; }
-      header h1 { font-size: 14px; }
-      header span { font-size: 11px; }
-      footer { flex-direction: column; align-items: flex-start; }
+    @media (pointer: coarse) {
+      .hint { font-size: 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="frame">
-    <header>
-      <div>
-        <h1>Enchantment By Design</h1>
-        <span>Drag to rotate • Pinch to zoom</span>
-      </div>
-    </header>
 
-    <div class="viewer-wrap">
-      <!-- 3D MODEL VIEWER -->
-      <model-viewer
-        id="viewer"
-        src="model.glb"
-        alt="3D jewelry design by Enchantment By Design"
-        camera-controls
-        auto-rotate
-        auto-rotate-delay="3000"
-        rotation-per-second="15deg"
-        exposure="1.0"
-        shadow-intensity="0.9"
-        shadow-softness="0.6"
-        environment-image="neutral"
-        touch-action="none"
-        interaction-prompt="none"
-        ar
-        ar-modes="scene-viewer webxr quick-look">
-      </model-viewer>
+  <div class="brand">Enchantment By Design</div>
 
-      <!-- One-time interaction hint logic -->
-      <script>
-        const viewer = document.getElementById("viewer");
-        const hasSeenHint = localStorage.getItem("ebd_hintShown");
+  <model-viewer id="pendantViewer"
+    src="model.glb"
+    camera-controls
+    autoplay
+    interaction-prompt="auto"
+    interaction-prompt-style="wiggle"
+    touch-action="none"
+    environment-image="neutral"
+    tone-mapping="neutral"
+    exposure="1.1"
+    shadow-intensity="1"
+    shadow-softness="0.6"
+    rotation-per-second="0deg"   <!-- no auto spin by default -->
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    alt="Gold pendant with Montana sapphire-like stone">
+  </model-viewer>
 
-        if (!hasSeenHint) {
-          // Show built-in hint once
-          viewer.setAttribute("interaction-prompt", "auto");
+  <div class="hint">Drag to rotate · Pinch to zoom · Tap “View in your space” on Android for AR</div>
 
-          // After user's first gesture → hide & never show again
-          viewer.addEventListener("camera-change", () => {
-            viewer.setAttribute("interaction-prompt", "none");
-            localStorage.setItem("ebd_hintShown", "true");
-          }, { once: true });
-        }
-      </script>
-    </div>
+  <script type="module">
+    const mv = document.getElementById('pendantViewer');
 
-    <footer>
-      <div class="hint">
-        <span class="dot"></span>
-        <span>Use “View in your space” on Android for AR preview.</span>
-      </div>
-      <span>© Enchantment By Design</span>
-    </footer>
-  </div>
+    mv.addEventListener('load', () => {
+      const model = mv.model;
+      if (!model) return;
+
+      const materials = model.materials || [];
+
+      // Try to guess which material is gold and which is the stone
+      const goldMat =
+        materials.find(m =>
+          /gold|metal|ring|rope/i.test(m.name)) || materials[0];
+
+      const stoneMat =
+        materials.find(m =>
+          /stone|gem|sapp|montana|topaz/i.test(m.name)) || materials[1];
+
+      // Helper so this doesn't explode if something is missing
+      function setPBR(mat, { base, metal, rough }) {
+        if (!mat || !mat.pbrMetallicRoughness) return;
+        if (base)   mat.pbrMetallicRoughness.setBaseColorFactor(base);
+        if (metal !== undefined)  mat.pbrMetallicRoughness.setMetallicFactor(metal);
+        if (rough !== undefined)  mat.pbrMetallicRoughness.setRoughnessFactor(rough);
+      }
+
+      // 🎨 Soft buttery gold (18k-ish, not too yellow)
+      // RGBA in 0–1 range
+      // hex-ish: #F8E0A5
+      setPBR(goldMat, {
+        base:  [0.97, 0.88, 0.65, 1.0],
+        metal: 1.0,
+        rough: 0.16
+      });
+
+      // 💎 Montana blue stone – medium deep blue-green
+      // hex-ish: #1B6A8C
+      if (stoneMat && stoneMat.pbrMetallicRoughness) {
+        stoneMat.pbrMetallicRoughness.setBaseColorFactor([0.11, 0.41, 0.55, 1.0]);
+        stoneMat.pbrMetallicRoughness.setMetallicFactor(0.0);  // dielectric, not metal
+        stoneMat.pbrMetallicRoughness.setRoughnessFactor(0.08);
+      }
+
+      // Optional: if your gem material supports transmission extension,
+      // you could push some transparency here, but that requires the
+      // GLB to include KHR_materials_transmission when exported.
+    });
+  </script>
 </body>
 </html>
+
