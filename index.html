@@ -103,57 +103,9 @@
 
 
   <div class="hint">Drag to rotate · Pinch to zoom · Tap “View in your space” on Android for AR</div>
-
-  <script type="module">
-    const mv = document.getElementById('pendantViewer');
-
-    mv.addEventListener('load', () => {
-      const model = mv.model;
-      if (!model) return;
-
-      const materials = model.materials || [];
-
-      // Try to guess which material is gold and which is the stone
-      const goldMat =
-        materials.find(m =>
-          /gold|metal|ring|rope/i.test(m.name)) || materials[0];
-
-      const stoneMat =
-        materials.find(m =>
-          /stone|gem|sapp|montana|topaz/i.test(m.name)) || materials[1];
-
-      // Helper so this doesn't explode if something is missing
-      function setPBR(mat, { base, metal, rough }) {
-        if (!mat || !mat.pbrMetallicRoughness) return;
-        if (base)   mat.pbrMetallicRoughness.setBaseColorFactor(base);
-        if (metal !== undefined)  mat.pbrMetallicRoughness.setMetallicFactor(metal);
-        if (rough !== undefined)  mat.pbrMetallicRoughness.setRoughnessFactor(rough);
-      }
-
-      // 🎨 Soft buttery gold (18k-ish, not too yellow)
-      // RGBA in 0–1 range
-      // hex-ish: #F8E0A5
-      setPBR(goldMat, {
-        base:  [0.97, 0.88, 0.65, 1.0],
-        metal: 1.0,
-        rough: 0.16
-      });
-
-      // 💎 Montana blue stone – medium deep blue-green
-      // hex-ish: #1B6A8C
-      if (stoneMat && stoneMat.pbrMetallicRoughness) {
-        stoneMat.pbrMetallicRoughness.setBaseColorFactor([0.11, 0.41, 0.55, 1.0]);
-        stoneMat.pbrMetallicRoughness.setMetallicFactor(0.0);  // dielectric, not metal
-        stoneMat.pbrMetallicRoughness.setRoughnessFactor(0.08);
-      }
-
-      // Optional: if your gem material supports transmission extension,
-      // you could push some transparency here, but that requires the
-      // GLB to include KHR_materials_transmission when exported.
-    });
-  </script>
 </body>
 </html>
+
 
 
 
