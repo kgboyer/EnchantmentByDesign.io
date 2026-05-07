@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Enchantment By Design – 3D Viewer</title>
 
+  <!-- model-viewer library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
@@ -11,14 +12,16 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #d8d8d8;
-      font-family: system-ui, sans-serif;
+      background: #05070b;
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     model-viewer {
       width: 100vw;
       height: 100vh;
-      background-color: #d8d8d8;
+      outline: none;
+      touch-action: none; /* stop page scrolling while rotating */
     }
 
     .brand {
@@ -28,8 +31,7 @@
       font-size: 11px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #222;
-      opacity: 0.75;
+      opacity: 0.7;
       pointer-events: none;
     }
 
@@ -40,52 +42,70 @@
       right: 0;
       text-align: center;
       font-size: 11px;
-      color: #222;
-      opacity: 0.75;
+      opacity: 0.7;
       pointer-events: none;
+    }
+
+    @media (pointer: coarse) {
+      .hint { font-size: 12px; }
     }
   </style>
 </head>
-
 <body>
+
   <div class="brand">Enchantment By Design</div>
 
-  <model-viewer
-    id="viewer"
+   <model-viewer
+    id="pendantViewer"
     src="model.glb"
     camera-controls
-    auto-rotate
+    autoplay
     interaction-prompt="auto"
-    environment-image="legacy"
-    exposure="2"
-    shadow-intensity="0"
+    interaction-prompt-style="wiggle"
+    touch-action="none"
+    environment-image="neutral"
+    tone-mapping="neutral"
+    exposure="1.1"
+    shadow-intensity="1"
+    shadow-softness="0.6"
+    rotation-per-second="0deg"
     ar
     ar-modes="scene-viewer webxr quick-look"
-    alt="3D model">
+    alt="Gold pendant with Montana sapphire-like stone">
   </model-viewer>
 
-  <div class="hint">Drag to rotate · Pinch to zoom</div>
-
   <script type="module">
-    const viewer = document.querySelector("#viewer");
+  const viewer = document.querySelector('model-viewer');
 
-    viewer.addEventListener("load", () => {
-      const materials = viewer.model.materials;
+  viewer.addEventListener('load', () => {
+    const gold = viewer.model.getMaterialByName('Default');
+    const sapphire = viewer.model.getMaterialByName('Sapphire');
+    if (!gold || !sapphire) return;
 
-      for (const material of materials) {
-        material.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.8, 0.8, 1]);
-        material.pbrMetallicRoughness.setMetallicFactor(0);
-        material.pbrMetallicRoughness.setRoughnessFactor(0.75);
-        material.setAlphaMode("OPAQUE");
+    // ---------- GOLD: soft buttery 18k ----------
+    gold.pbrMetallicRoughness.setBaseColorFactor([1.0, 0.85, 0.45, 1.0]); // warm, buttery
+    gold.pbrMetallicRoughness.setMetallicFactor(1.0);
+    gold.pbrMetallicRoughness.setRoughnessFactor(0.10);
+    gold.setAlphaMode('OPAQUE');
+    gold.doubleSided = true;          // <-- correct flag for thin / MultiPipe bits
 
-        // Makes it visible even if lighting/normals are weird.
-        if (material.setEmissiveFactor) {
-          material.setEmissiveFactor([0.45, 0.45, 0.45]);
-        }
+    // ---------- SAPPHIRE: Montana blue ----------
+    sapphire.pbrMetallicRoughness.setBaseColorFactor([0.05, 0.22, 0.55, 0.95]);
+    sapphire.pbrMetallicRoughness.setMetallicFactor(0.0);
+    sapphire.pbrMetallicRoughness.setRoughnessFactor(0.05);
+    sapphire.setAlphaMode('BLEND');   // transparent
+    sapphire.setAlphaCutoff(0.05);
+    sapphire.doubleSided = true;      // nice for refraction-ish look
+  });
+</script>
 
-        material.doubleSided = true;
-      }
-    });
-  </script>
+  
+  <div class="hint">Drag to rotate · Pinch to zoom · Tap “View in your space” on Android for AR</div>
 </body>
 </html>
+
+
+
+
+
+
